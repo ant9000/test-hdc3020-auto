@@ -56,7 +56,7 @@ int main(void)
                 );
             }
         }
-        ztimer_sleep(ZTIMER_MSEC, 30000);
+        ztimer_sleep(ZTIMER_MSEC, SLEEP_SECS * 1000);
     }
     return 0;
 }

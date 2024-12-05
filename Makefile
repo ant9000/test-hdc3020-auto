@@ -14,6 +14,7 @@ QUIET ?= 1
 PORT ?= /dev/ttyUSB0
 
 AUTO ?= 1
+SLEEP ?= 30
 
 USEMODULE += hdc3020
 USEMODULE += printf_float
@@ -32,6 +33,7 @@ CFLAGS += -DHDC3020_PARAMS="$(HDC3020_SENSORS)"
 ifeq (1, $(AUTO))
     CFLAGS += -DAUTO_MEASURE
 endif
+CFLAGS += -DSLEEP_SECS=$(SLEEP)
 
 include $(RIOTBASE)/Makefile.include
 include $(LORA3ABASE)/Makefile.include
