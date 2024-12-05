@@ -22,6 +22,7 @@ int main(void)
         hdc3020_data[i].connected = 0;
         if (hdc3020_init(&hdc3020[i], &hdc3020_params[i]) == HDC3020_OK) {
             hdc3020_data[i].connected = 1;
+            hdc3020_deactivate_alert(&hdc3020[i]);
 #if AUTO_MEASURE
             if (hdc3020_set_auto_measurement_mode(&hdc3020[i], HDC3020_MPS_0_5_LPM_0) == HDC3020_OK) {
                 printf("[%d] set auto measure ok\n", i);
