@@ -21,11 +21,14 @@ int main(void)
     for (i = 0; i < HDC3020_NUMOF; i++) {
         hdc3020_data[i].connected = 0;
         if (hdc3020_init(&hdc3020[i], &hdc3020_params[i]) == HDC3020_OK) {
+            hdc3020_data[i].connected = 1;
+#if AUTO_MEASURE
             if (hdc3020_set_auto_measurement_mode(&hdc3020[i], HDC3020_MPS_0_5_LPM_0) == HDC3020_OK) {
-                hdc3020_data[i].connected = 1;
+                printf("[%d] set auto measure ok\n", i);
             } else {
                 printf("[%d] set auto measure failed\n", i);
             }
+#endif
         } else {
             printf("[%d] init failed\n", i);
         }
@@ -34,21 +37,25 @@ int main(void)
     while(1) {
         for (i = 0; i < HDC3020_NUMOF; i++) {
             if (hdc3020_data[i].connected) {
-                uint8_t valid = 0;
-                if (hdc3020_auto_measurement_mode_read(&hdc3020[i], &temp, &hum) == HDC3020_OK) {
+                uint8_t status;
+#if AUTO_MEASURE
+                status = hdc3020_auto_measurement_mode_read(&hdc3020[i], &temp, &hum);
+#else
+                status = hdc3020_read(&hdc3020[i], &temp, &hum);
+#endif
+                if (status == HDC3020_OK) {
                     hdc3020_data[i].temperature = temp;
                     hdc3020_data[i].humidity = hum;
-                    valid = 1;
                 }
                 printf(
                     "[%d] temp = %3.2f, hum = %3.2f %s\n", i,
                     hdc3020_data[i].temperature,
                     hdc3020_data[i].humidity,
-                    valid ? "***" : ""
+                    status == HDC3020_OK ? "***" : ""
                 );
             }
         }
-        ztimer_sleep(ZTIMER_MSEC, 5000);
+        ztimer_sleep(ZTIMER_MSEC, 30000);
     }
     return 0;
 }

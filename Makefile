@@ -13,6 +13,8 @@ DEVELHELP ?= 1
 QUIET ?= 1
 PORT ?= /dev/ttyUSB0
 
+AUTO ?= 1
+
 USEMODULE += hdc3020
 USEMODULE += printf_float
 USEMODULE += ztimer_msec
@@ -26,6 +28,10 @@ HDC3020_SENSORS := "{.i2c_dev=ACME0_I2C_DEV,.i2c_addr=HDC3020_PARAM_I2C_ADDR,.en
 HDC3020_SENSORS += "{.i2c_dev=ACME2_I2C_DEV,.i2c_addr=HDC3020_PARAM_I2C_ADDR,.enable_pin=HDC3020_ENABLE_PIN,.enable_on=HDC3020_ENABLE_ON,.start_delay=HDC3020_START_DELAY,.measure_delay=HDC3020_MEAS_DELAY}"
 
 CFLAGS += -DHDC3020_PARAMS="$(HDC3020_SENSORS)"
+
+ifeq (1, $(AUTO))
+    CFLAGS += -DAUTO_MEASURE
+endif
 
 include $(RIOTBASE)/Makefile.include
 include $(LORA3ABASE)/Makefile.include
